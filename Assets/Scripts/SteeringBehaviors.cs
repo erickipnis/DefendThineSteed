@@ -68,8 +68,14 @@ public class SteeringBehaviors : MonoBehaviour {
 		applyForce(steerVector);
 	}
 	
+	void flee(Vector3 target)
+	{
+	
+	}
+	
 	void wander()
 	{
 	
 	}
+	
 }
