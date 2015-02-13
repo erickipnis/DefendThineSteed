@@ -7,7 +7,7 @@ public class SteeringBehaviors : MonoBehaviour {
 	Vector3 velocity;
 	Vector3 acceleration;
 	
-	Vector3 targetSeek;
+	public Vector3 targetSeek;
 
 	float maxSpeed;
 	float maxForce;	
@@ -62,9 +62,14 @@ public class SteeringBehaviors : MonoBehaviour {
 		desiredVelocity *= maxSpeed;
 		
 		Vector3 steerVector = desiredVelocity - velocity;
-		
+		                        
 		steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
 		
 		applyForce(steerVector);
+	}
+	
+	void wander()
+	{
+	
 	}
 }
