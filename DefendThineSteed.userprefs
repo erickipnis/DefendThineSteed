@@ -1,8 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\SteeringBehaviors.cs">
     <Files>
-      <File FileName="Assets\Scripts\SteeringBehaviors.cs" Line="60" Column="3" />
+      <File FileName="Assets\Scripts\SteeringBehaviors.cs" Line="114" Column="1" />
+      <File FileName="Assets\Scripts\SteeringBehaviors.cs" Line="102" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
