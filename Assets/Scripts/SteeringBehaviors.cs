@@ -6,6 +6,7 @@ public class SteeringBehaviors : MonoBehaviour {
 	Vector3 position;
 	Vector3 velocity;
 	Vector3 acceleration;
+	float wanderAngle = 15.0f;
 	
 	public Vector3 targetSeek;
 
@@ -30,7 +31,10 @@ public class SteeringBehaviors : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		arrive(targetSeek);
+		//arrive(targetSeek);
+		//seek(targetSeek);
+		//flee(targetSeek);
+		wander();
 		UpdateForces();
 	}
 	
@@ -108,12 +112,51 @@ public class SteeringBehaviors : MonoBehaviour {
 	
 	void flee(Vector3 target)
 	{
-	
+		Vector3 desiredVelocity = target - position;
+		
+		desiredVelocity.Normalize();
+		
+		desiredVelocity *= -maxSpeed;
+		
+		Vector3 fleeVector = desiredVelocity - velocity;
+		
+		fleeVector = Vector3.ClampMagnitude(fleeVector, maxForce);
+		
+		applyForce(fleeVector);
 	}
 	
 	void wander()
 	{
-	
+		float circleRadius = 20.0f; 
+		float circleDistance = 20.0f;
+		float angleChange = 0.5f;
+
+		Vector3 circleCenter = velocity;
+
+		circleCenter.Normalize();
+		circleCenter *= circleDistance;
+
+		Vector3 displacement = new Vector3 (0.0f, 0.0f, -1.0f);
+		displacement *= circleRadius;
+
+		displacement = setAngle(displacement, wanderAngle);
+
+		float randomNum = Random.Range(0.0f, 1.0f);
+		wanderAngle += randomNum * angleChange - angleChange * .5f;
+
+		Vector3 wanderForce = circleCenter + displacement;
+
+		applyForce(wanderForce);
 	}
-	
+
+	Vector3 setAngle(Vector3 displacement, float angle)
+	{
+		float length = displacement.magnitude;
+		Vector3 directionVector = displacement;
+
+		directionVector.x = Mathf.Cos(angle) * length;
+		directionVector.z = Mathf.Sin(angle) * length;
+
+		return directionVector;
+	}
 }
