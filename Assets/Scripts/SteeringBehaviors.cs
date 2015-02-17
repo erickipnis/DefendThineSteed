@@ -6,16 +6,17 @@ public class SteeringBehaviors : MonoBehaviour {
 	Vector3 position;
 	Vector3 velocity;
 	Vector3 acceleration;
+	
 	float wanderAngle = 15.0f;
 	
-	public Vector3 targetSeek;
+	Vector3 targetSeek;
 
 	float maxSpeed;
-	float maxForce;	
+	float maxForce;		
 
 	// Use this for initialization
 	void Start ()
-	{
+	{	
 		position = transform.position;
 		position.y = 0;
 		
@@ -24,18 +25,64 @@ public class SteeringBehaviors : MonoBehaviour {
 		targetSeek = new Vector3(580f, 0f, 845f);
 
 		maxSpeed = 4;
-		maxForce = 0.1f;
-		
+		maxForce = 0.1f;		
 	}
 	
 	// Update is called once per frame
 	void Update ()
-	{
-		//arrive(targetSeek);
-		//seek(targetSeek);
-		//flee(targetSeek);
-		wander();
+	{		
+		DetermineBehaviors();
 		UpdateForces();
+	}
+	
+	void DetermineBehaviors()
+	{
+		if (gameObject.tag == "Steed")
+		{
+			GameObject[] trolls = GameObject.FindGameObjectsWithTag("Troll");
+			GameObject[] hayBales = GameObject.FindGameObjectsWithTag("Hay");
+			
+			for (int i = 0; i < trolls.Length; i++)
+			{
+				Vector3 trollPosition = trolls[i].transform.position;
+				Vector3 hayPosition = hayBales[i].transform.position;
+				
+				float trollDistance = Vector3.Distance(trollPosition, position);
+				float hayDistance = Vector3.Distance(hayPosition, position);
+				
+				if (trollDistance <= 100)
+				{
+					flee(trollPosition);
+				}
+				else if (hayDistance <= 100 && trollDistance > 100)
+				{				
+					arrive(hayPosition);
+				}
+				//else if (trollDistance > 100 && hayDistance > 100)
+				//{
+				//	wander();
+				//}								
+			}
+		}
+		else if (gameObject.tag == "Troll")
+		{
+			GameObject[] steeds = GameObject.FindGameObjectsWithTag("Steed");
+			
+			for (int i = 0; i < steeds.Length; i++)
+			{
+				Vector3 steedPosition = steeds[i].transform.position;
+				float steedDistance = Vector3.Distance(steedPosition, position);
+				
+				if (steedDistance <= 100)
+				{
+					seek(steedPosition);
+				}
+				else if (steedDistance > 100)
+				{
+					wander();
+				}
+			}
+		}
 	}
 	
 	void UpdateForces()
