@@ -24,7 +24,7 @@ public class SteeringBehaviors : MonoBehaviour {
 		acceleration = new Vector3(0, 0, 0);
 		targetSeek = new Vector3(580f, 0f, 845f);
 
-		maxSpeed = 4;
+		maxSpeed = 2;
 		maxForce = 0.1f;		
 	}
 	
@@ -54,8 +54,9 @@ public class SteeringBehaviors : MonoBehaviour {
 				{
 					flee(trollPosition);
 				}
-				else if (hayDistance <= 100 && trollDistance > 100)
-				{				
+				else if (hayDistance < 100)
+				{	
+					Debug.Log("Hit arrive");
 					arrive(hayPosition);
 				}
 				//else if (trollDistance > 100 && hayDistance > 100)
@@ -126,13 +127,15 @@ public class SteeringBehaviors : MonoBehaviour {
 		float distance = desiredVelocity.magnitude;
 		desiredVelocity.Normalize();
 
-		if (distance < 100) {
+		if (distance < 100) 
+		{
 			float m = scale (0, 100, 0, maxSpeed, distance);
 			desiredVelocity *= m;
 		} 
-		else {
+		else 
+		{
 			desiredVelocity *= maxSpeed;
-			}
+		}
 
 		Vector3 steerVector = desiredVelocity - velocity;
 		steerVector = Vector3.ClampMagnitude (steerVector, maxForce);
