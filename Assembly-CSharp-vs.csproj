@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Prefab\Cha_Data\Script\ScreenShot.cs" />
+     <Compile Include="Assets\SampleAgentScript.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviors.cs" />
      <None Include="Assets\Prefab\Earthborn Troll\Shader\Alpha_Texture.shader" />
      <None Include="Assets\Prefab\Earthborn Troll\Shader\DoubleSided-Light-Spec.shader" />
