@@ -10,11 +10,17 @@ public class SampleAgentScript : MonoBehaviour {
 	Vector3 acceleration;
 	
 	float wanderAngle = 15.0f;
+	float steedWanderWeight =0.001f;
+	float steedFleeWeight = 0.2f;
+	float trollSeekWeight = 0.2f;
+	float trollWanderWeight = 0.001f;
 	
 	Vector3 targetSeek;
 	
 	float maxSpeed;
-	float maxForce;		
+	float maxForce;	
+
+	NavMeshPath currentPath;
 	
 	// Use this for initialization
 	void Start ()
@@ -24,12 +30,14 @@ public class SampleAgentScript : MonoBehaviour {
 		position = transform.position;
 		position.y = 0;
 		
-		velocity = new Vector3(0, 0, 0);
-		acceleration = new Vector3(0, 0, 0);
-		targetSeek = new Vector3(580f, 0f, 845f);
+		velocity = agent.velocity;
+		acceleration = new Vector3 (0.0f, 0.0f, 0.0f);
+		targetSeek = agent.steeringTarget;
 		
 		maxSpeed = 2;
-		maxForce = 0.1f;		
+		maxForce = 0.1f;
+
+		currentPath = agent.path;
 	}
 	
 	// Update is called once per frame
@@ -59,13 +67,13 @@ public class SampleAgentScript : MonoBehaviour {
 				{
 					flee(trollPosition);
 				}
-				//else if (trollDistance > 100 && hayDistance > 100)
-				//{
-				//	wander();
-				//}								
+				else if (trollDistance > 100)
+				{
+					wander();
+				}								
 			}
 		}
-		else if (gameObject.tag == "Troll")
+		else if (agent.gameObject.tag == "Troll")
 		{
 			GameObject[] steeds = GameObject.FindGameObjectsWithTag("Steed");
 			
@@ -81,6 +89,8 @@ public class SampleAgentScript : MonoBehaviour {
 				else if (steedDistance > 100)
 				{
 					wander();
+					agent.path = currentPath;
+
 				}
 			}
 		}
@@ -94,7 +104,7 @@ public class SampleAgentScript : MonoBehaviour {
 		
 		position += velocity;
 		
-		transform.position = position;
+		agent.transform.position = position;
 		
 		acceleration *= 0;
 	}
@@ -107,6 +117,7 @@ public class SampleAgentScript : MonoBehaviour {
 
 	void seek(Vector3 target)
 	{
+
 		Vector3 desiredVelocity = target - position;
 		
 		desiredVelocity.Normalize();
@@ -117,7 +128,7 @@ public class SampleAgentScript : MonoBehaviour {
 		
 		steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
 		
-		applyForce(steerVector);
+		applyForce(steerVector * trollSeekWeight);
 	}
 
 	void flee(Vector3 target)
@@ -132,7 +143,7 @@ public class SampleAgentScript : MonoBehaviour {
 		
 		fleeVector = Vector3.ClampMagnitude(fleeVector, maxForce);
 		
-		applyForce(fleeVector);
+		applyForce(fleeVector * steedFleeWeight);
 	}
 	
 	void wander()
@@ -156,7 +167,7 @@ public class SampleAgentScript : MonoBehaviour {
 		
 		Vector3 wanderForce = circleCenter + displacement;
 		
-		applyForce(wanderForce);
+		applyForce(wanderForce * trollWanderWeight);
 	}
 	
 	Vector3 setAngle(Vector3 displacement, float angle)
