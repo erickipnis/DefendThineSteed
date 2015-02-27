@@ -19,14 +19,14 @@ public class SampleAgentScript : MonoBehaviour {
 	
 	float maxSpeed;
 	float maxForce;	
-
+	
 	NavMeshPath currentPath;
 	
 	// Use this for initialization
 	void Start ()
 	{	
 		agent = GetComponent<NavMeshAgent> ();
-
+		
 		position = transform.position;
 		position.y = 0;
 		
@@ -36,16 +36,16 @@ public class SampleAgentScript : MonoBehaviour {
 		
 		maxSpeed = 2;
 		maxForce = 0.1f;
-
+		
 		currentPath = agent.path;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{		
-
+		
 		DetermineBehaviors();
-		UpdateForces();
+		//UpdateForces();
 	}
 	
 	void DetermineBehaviors()
@@ -69,7 +69,7 @@ public class SampleAgentScript : MonoBehaviour {
 				}
 				else if (trollDistance > 100)
 				{
-					wander();
+					//wander();
 				}								
 			}
 		}
@@ -88,14 +88,14 @@ public class SampleAgentScript : MonoBehaviour {
 				}
 				else if (steedDistance > 100)
 				{
-					wander();
-					agent.path = currentPath;
-
+					//wander();
+					//agent.path = currentPath;
+					
 				}
 			}
 		}
 	}
-
+	
 	void UpdateForces()
 	{
 		velocity += acceleration;
@@ -108,32 +108,33 @@ public class SampleAgentScript : MonoBehaviour {
 		
 		acceleration *= 0;
 	}
-
+	
 	void applyForce(Vector3 force)
 	{
 		acceleration += force;
 		acceleration.y = 0;
 	}
-
+	
 	void seek(Vector3 target)
 	{
-
-		Vector3 desiredVelocity = target - position;
-		
-		desiredVelocity.Normalize();
-		
-		desiredVelocity *= maxSpeed;
-		
-		Vector3 steerVector = desiredVelocity - velocity;
-		
-		steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
-		
-		applyForce(steerVector * trollSeekWeight);
+		agent.SetDestination (target);
+		//		Vector3 desiredVelocity = target - position;
+		//		
+		//		desiredVelocity.Normalize();
+		//		
+		//		desiredVelocity *= maxSpeed;
+		//		
+		//		Vector3 steerVector = desiredVelocity - velocity;
+		//		
+		//		steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
+		//		
+		//		applyForce(steerVector * trollSeekWeight);
 	}
-
+	
 	void flee(Vector3 target)
-	{
-		Vector3 desiredVelocity = target - position;
+	{	
+
+		Vector3 desiredVelocity = target - agent.transform.position;
 		
 		desiredVelocity.Normalize();
 		
@@ -143,7 +144,7 @@ public class SampleAgentScript : MonoBehaviour {
 		
 		fleeVector = Vector3.ClampMagnitude(fleeVector, maxForce);
 		
-		applyForce(fleeVector * steedFleeWeight);
+		agent.SetDestination (fleeVector);
 	}
 	
 	void wander()
