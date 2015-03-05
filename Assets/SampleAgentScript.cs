@@ -22,6 +22,8 @@ public class SampleAgentScript : MonoBehaviour {
 	
 	NavMeshPath currentPath;
 	
+	bool isSeeking;
+	
 	// Use this for initialization
 	void Start ()
 	{	
@@ -38,6 +40,8 @@ public class SampleAgentScript : MonoBehaviour {
 		maxForce = 0.1f;
 		
 		currentPath = agent.path;
+		
+		isSeeking = false;
 	}
 	
 	// Update is called once per frame
@@ -49,7 +53,7 @@ public class SampleAgentScript : MonoBehaviour {
 	}
 	
 	void DetermineBehaviors()
-	{
+	{	
 		if (agent.gameObject.tag == "Steed")
 		{
 			GameObject[] trolls = GameObject.FindGameObjectsWithTag("Troll");
@@ -60,16 +64,16 @@ public class SampleAgentScript : MonoBehaviour {
 				Vector3 trollPosition = trolls[i].transform.position;
 				Vector3 hayPosition = hayBales[i].transform.position;
 				
-				float trollDistance = Vector3.Distance(trollPosition, position);
-				float hayDistance = Vector3.Distance(hayPosition, position);
+				float trollDistance = Vector3.Distance(trollPosition, agent.transform.position);
+				float hayDistance = Vector3.Distance(hayPosition, agent.transform.position);
 				
 				if (trollDistance <= 100)
 				{
-					flee(trollPosition);
+					//flee(trollPosition);
 				}
 				else if (trollDistance > 100)
 				{
-					wander();
+					//wander();
 				}								
 			}
 		}
@@ -80,17 +84,27 @@ public class SampleAgentScript : MonoBehaviour {
 			for (int i = 0; i < steeds.Length; i++)
 			{
 				Vector3 steedPosition = steeds[i].transform.position;
-				float steedDistance = Vector3.Distance(steedPosition, position);
+				float steedDistance = Vector3.Distance(steedPosition, agent.transform.position);
+				//Debug.Log (steedDistance);
 				
 				if (steedDistance <= 100)
 				{
+					//agent.ResetPath();
 					seek(steedPosition);
-				}
-				else if (steedDistance > 100)
-				{
-					wander();
-					//agent.path = currentPath;
+					isSeeking = true;
+					Debug.Log(steedDistance);
 					
+					if (steedDistance <= 10)
+					{
+						isSeeking = false;
+						Destroy(steeds[i]);
+					}
+				}				
+				else if (steedDistance > 100 & !isSeeking)
+				{
+					//wander();
+					//agent.ResetPath();
+					seek(target.position);					
 				}
 			}
 		}
@@ -117,25 +131,27 @@ public class SampleAgentScript : MonoBehaviour {
 	
 	void seek(Vector3 target)
 	{		
-		//Vector3 desiredVelocity = target - agent.transform.position;
-		Vector3 desiredVelocity = agent.desiredVelocity;
-				
-		desiredVelocity.Normalize();
-				
-		desiredVelocity *= maxSpeed;
-				
-		Vector3 steerVector = desiredVelocity - agent.velocity;
-				
-		steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
-				
-		agent.SetDestination(steerVector);
+//		Vector3 desiredVelocity = target - agent.transform.position;
+//		//Vector3 desiredVelocity = agent.desiredVelocity;
+//				
+//		desiredVelocity.Normalize();
+//				
+//		desiredVelocity *= maxSpeed;
+//				
+//		Vector3 steerVector = desiredVelocity - agent.velocity;
+//				
+//		steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
+//				
+//		agent.SetDestination(steerVector);
+
+		agent.SetDestination(target);
 		
 	}
 	
 	void flee(Vector3 target)
 	{	
-		//Vector3 desiredVelocity = target - agent.transform.position;
-		Vector3 desiredVelocity = agent.desiredVelocity;
+		Vector3 desiredVelocity = target - agent.transform.position;
+		//Vector3 desiredVelocity = agent.desiredVelocity;
 		
 		desiredVelocity.Normalize();
 		
@@ -168,6 +184,7 @@ public class SampleAgentScript : MonoBehaviour {
 		wanderAngle += randomNum * angleChange - angleChange * .5f;
 		
 		Vector3 wanderForce = circleCenter + displacement;
+		//Debug.Log(wanderForce);
 		
 		agent.SetDestination(wanderForce);
 	}
