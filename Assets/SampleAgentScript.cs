@@ -58,6 +58,12 @@ public class SampleAgentScript : MonoBehaviour {
 		{
 			GameObject[] trolls = GameObject.FindGameObjectsWithTag("Troll");
 			GameObject[] hayBales = GameObject.FindGameObjectsWithTag("Hay");
+
+			float shortestTrollDistance = float.MaxValue;
+
+			//int shortestTrollPositionIndex;
+
+			Vector3 shortestTrollPosition = new Vector3(0.0f, 0.0f, 0.0f);
 			
 			for (int i = 0; i < trolls.Length; i++)
 			{
@@ -66,12 +72,19 @@ public class SampleAgentScript : MonoBehaviour {
 				
 				float trollDistance = Vector3.Distance(trollPosition, agent.transform.position);
 				float hayDistance = Vector3.Distance(hayPosition, agent.transform.position);
+
+				if (trollDistance < shortestTrollDistance)
+				{
+					shortestTrollDistance = trollDistance;
+					shortestTrollPosition = trolls[i].transform.position;
+					//shortestTrollPositionIndex = i;
+				}
 				
-				if (trollDistance <= 100)
+				if (shortestTrollDistance <= 100)
 				{
 					//flee(trollPosition);
 				}
-				else if (trollDistance > 100)
+				else if (shortestTrollDistance > 100)
 				{
 					//wander();
 				}								
@@ -80,27 +93,39 @@ public class SampleAgentScript : MonoBehaviour {
 		else if (agent.gameObject.tag == "Troll")
 		{
 			GameObject[] steeds = GameObject.FindGameObjectsWithTag("Steed");
-						
+
+			float shortestSteedDistance = float.MaxValue;
+
+			int shortestSteedPositionIndex = 0;
+
+			Vector3 shortestSteedPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
 			for (int i = 0; i < steeds.Length; i++)
 			{
 				Vector3 steedPosition = steeds[i].transform.position;
 				float steedDistance = Vector3.Distance(steedPosition, agent.transform.position);
 				//Debug.Log (steedDistance);
-				
-				if (steedDistance <= 100)
+
+				if (steedDistance < shortestSteedDistance)
 				{
+					shortestSteedDistance = steedDistance;
+					shortestSteedPosition = steeds[i].transform.position;
+					shortestSteedPositionIndex = i;
+					//Debug.Log(shortestSteedDistance);
+				}
+				
+				if (shortestSteedDistance <= 100)
+				{
+					Debug.Log(shortestSteedDistance);
 					//agent.ResetPath();
-					seek(steedPosition);
-					isSeeking = true;
-					Debug.Log(steedDistance);
-					
-					if (steedDistance <= 10)
+					seek(shortestSteedPosition);
+					//Debug.Log(steedDistance);
+					if (shortestSteedDistance <= 10)
 					{
-						isSeeking = false;
-						Destroy(steeds[i]);
+						Destroy(steeds[shortestSteedPositionIndex]);
 					}
 				}				
-				else if (steedDistance > 100 & !isSeeking)
+				else if (shortestSteedDistance > 100)
 				{
 					//wander();
 					//agent.ResetPath();
