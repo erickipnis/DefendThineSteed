@@ -82,7 +82,7 @@ public class SampleAgentScript : MonoBehaviour {
 				
 				if (shortestTrollDistance <= 100)
 				{
-					//flee(trollPosition);
+					flee(trollPosition);
 				}
 				else if (shortestTrollDistance > 100)
 				{
@@ -116,7 +116,7 @@ public class SampleAgentScript : MonoBehaviour {
 				
 				if (shortestSteedDistance <= 100)
 				{
-					Debug.Log(shortestSteedDistance);
+					//Debug.Log(shortestSteedDistance);
 					//agent.ResetPath();
 					seek(shortestSteedPosition);
 					//Debug.Log(steedDistance);
@@ -127,9 +127,13 @@ public class SampleAgentScript : MonoBehaviour {
 				}				
 				else if (shortestSteedDistance > 100)
 				{
-					//wander();
+					Vector3 wanderForce = wander();
+					wanderForce.Normalize();
+					//wanderForce = wanderForce * 10;
+					//Debug.Log(wanderForce);
+					seek (target.position + wanderForce);
 					//agent.ResetPath();
-					seek(target.position);					
+					//seek(target.position);					
 				}
 			}
 		}
@@ -189,14 +193,14 @@ public class SampleAgentScript : MonoBehaviour {
 		agent.SetDestination (fleeVector);
 	}
 	
-	void wander()
+	Vector3 wander()
 	{
 		float circleRadius = 20.0f; 
 		float circleDistance = 20.0f;
 		float angleChange = 0.5f;
 		
 		Vector3 circleCenter = agent.velocity;
-		
+		//Debug.Log (agent.velocity);
 		circleCenter.Normalize();
 		circleCenter *= circleDistance;
 		
@@ -206,12 +210,18 @@ public class SampleAgentScript : MonoBehaviour {
 		displacement = setAngle(displacement, wanderAngle);
 		
 		float randomNum = Random.Range(0.0f, 1.0f);
-		wanderAngle += randomNum * angleChange - angleChange * .5f;
+		wanderAngle += (randomNum * angleChange) - (angleChange * .5f);
 		
 		Vector3 wanderForce = circleCenter + displacement;
+		//Debug.Log (wanderAngle);
+//		wanderForce = targetVector - wanderForce;
+//		wanderForce = wanderForce.normalized;
+//		wanderForce *= maxSpeed;
+//		wanderForce = Vector3.ClampMagnitude (wanderForce, maxForce);
 		//Debug.Log(wanderForce);
-		
-		agent.SetDestination(wanderForce);
+		//Debug.Log(agent.pathStatus);
+		//agent.SetDestination(wanderForce);
+		return wanderForce;
 	}
 	
 	Vector3 setAngle(Vector3 displacement, float angle)
