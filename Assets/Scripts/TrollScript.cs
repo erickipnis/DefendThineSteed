@@ -6,7 +6,7 @@ public class TrollScript : MonoBehaviour{
 	NavMeshAgent agent;
 	
 	GameObject[] steeds; 
-	GameObject wanderSphere;
+	//GameObject wanderSphere;
 	
 	public Vector3 targetSeek;
 
@@ -42,8 +42,8 @@ public class TrollScript : MonoBehaviour{
 		
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 		
-		wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		wanderSphere.transform.position = agent.transform.position;
+		//wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		//wanderSphere.transform.position = agent.transform.position;
 		
 	}
 	
@@ -64,36 +64,36 @@ public class TrollScript : MonoBehaviour{
 	
 	void DetermineBehaviors()
 	{
-//		GameObject steed = findClosestSteed();
-//		
-//		Vector3 steedPosition = steed.transform.position;
-//		
-//		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
-//		
-//		Debug.Log(steedDistance);
-//		
-//		if (steedDistance <= 100)
-//		{
-//			Debug.Log(steedDistance);
-//			Vector3 seekForce = seek(steedPosition);
-//			
-//			applyForce(seekForce);			
-//			//agent.SetDestination(seekForce);
-//			
-//			if (steedDistance < 5)
-//			{
-//				Destroy(steed);
-//			}
-//		}
-//		else if (steedDistance > 100)
-//		{	
-//			Vector3 wanderForce = wander();
-//			Debug.Log(steedDistance);
-//						
-//			//agent.SetDestination(wanderForce);			
-//		}
+		GameObject steed = findClosestSteed();
+		
+		Vector3 steedPosition = steed.transform.position;
+		
+		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
+		
+		//Debug.Log(steedDistance);
+		
+		if (steedDistance <= 100)
+		{
+			//Debug.Log(steedDistance);
+			Vector3 seekForce = seek(steedPosition);
+			
+			applyForce(seekForce);			
+			//agent.SetDestination(seekForce);
+			
+			if (steedDistance < 5)
+			{
+				Destroy(steed);
+			}
+		}
+		else if (steedDistance > 100)
+		{	
+			Vector3 wanderForce = wander();
+			//Debug.Log(steedDistance);
+						
+			agent.SetDestination(wanderForce);			
+		}
 
-		Vector3 wanderForce = wander();
+		Vector3 wanderingForce = wander();
 	}
 	
 	private void calculateVelocity()
@@ -166,7 +166,7 @@ public class TrollScript : MonoBehaviour{
 		float angleChange = 0.5f;
 		
 		Vector3 circleCenter = velocity;
-		Debug.Log(velocity);
+		//Debug.Log(velocity);
 		
 		circleCenter.Normalize();
 		circleCenter *= circleDistance;
@@ -180,9 +180,9 @@ public class TrollScript : MonoBehaviour{
 		wanderAngle += randomNum * angleChange - angleChange * .5f;
 		
 		Vector3 wanderForce = circleCenter + displacement;
-		Debug.DrawRay(agent.transform.position, wanderForce, Color.red);
+		//Debug.DrawRay(agent.transform.position, wanderForce, Color.red);
 		
-		wanderSphere.transform.position = agent.transform.position + wanderForce;
+		//wanderSphere.transform.position = agent.transform.position + wanderForce;
 		
 		wanderForce.Normalize();		
 		
