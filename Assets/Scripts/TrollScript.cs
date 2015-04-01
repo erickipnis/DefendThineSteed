@@ -70,7 +70,7 @@ public class TrollScript : MonoBehaviour{
 		
 		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
 		
-		Debug.Log(steedDistance);
+		//Debug.Log(steedDistance);
 		
 		if (steedDistance <= 100)
 		{
@@ -83,11 +83,12 @@ public class TrollScript : MonoBehaviour{
 			if (steedDistance < 10)
 			{
 				Destroy(steed);
+
 			}
 		}
 		else if (steedDistance > 100)
 		{	
-			wander();			
+			//wander();			
 		}
 	}
 	
@@ -105,7 +106,7 @@ public class TrollScript : MonoBehaviour{
 		float distance = 0;
 		
 		GameObject closestSteed = null;
-		
+		steeds = GameObject.FindGameObjectsWithTag("Steed");
 		for (int i = 0; i < steeds.Length; i++)
 		{
 		 	distance = Vector3.Distance(agent.transform.position, steeds[i].transform.position);

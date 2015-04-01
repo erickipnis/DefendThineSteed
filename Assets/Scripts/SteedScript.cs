@@ -7,7 +7,7 @@ NavMeshAgent agent;
 
 GameObject[] trolls; 
 //GameObject wanderSphere;
-
+GameObject player;
 public Vector3 targetSeek;
 
 Vector3 previousPosition;
@@ -39,7 +39,7 @@ void Start ()
 	
 	trolls = GameObject.FindGameObjectsWithTag("Troll");
 	//Debug.Log(steeds);
-	
+	player = GameObject.FindGameObjectWithTag("Player");
 	targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 	
 	//wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -52,7 +52,7 @@ void Update ()
 {
 	if (trolls == null)
 	{
-		trolls = GameObject.FindGameObjectsWithTag("Steed");
+		trolls = GameObject.FindGameObjectsWithTag("Trolls");
 	}
 	
 	//Debug.Log("Update is being called!");
@@ -67,11 +67,20 @@ void DetermineBehaviors()
 	GameObject troll = findClosestTroll();
 	
 	Vector3 trollPosition = troll.transform.position;
+	Vector3 playerPosition = player.transform.position;
 	
 	float trollDistance = Vector3.Distance(agent.transform.position, trollPosition);
+	float playerDistance = Vector3.Distance(agent.transform.position, playerPosition);
 	
 	//Debug.Log(trollDistance);
 	
+	if (playerDistance <= 100)
+	{
+		Vector3 seekForce = seek (playerPosition);
+		applyForce (seekForce);
+		Debug.Log(playerDistance);
+
+	}
 	if (trollDistance <= 100)
 	{
 		//Debug.Log(trollDistance);
@@ -83,11 +92,12 @@ void DetermineBehaviors()
 	}
 	else if (trollDistance > 100)
 	{	
-		Vector3 wanderForce = wander();
+		//Vector3 wanderForce = wander();
 		//Debug.Log(trollDistance);
 		
 		//agent.SetDestination(wanderForce);			
 	}
+	
 	
 	Vector3 wanderingForce = wander();
 }
@@ -106,7 +116,7 @@ private GameObject findClosestTroll()
 	float distance = 0;
 	
 	GameObject closestTroll = null;
-	
+	trolls = GameObject.FindGameObjectsWithTag("Troll");
 	for (int i = 0; i < trolls.Length; i++)
 	{
 		distance = Vector3.Distance(agent.transform.position, trolls[i].transform.position);
