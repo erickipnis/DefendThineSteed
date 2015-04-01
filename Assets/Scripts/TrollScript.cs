@@ -42,7 +42,7 @@ public class TrollScript : MonoBehaviour{
 		
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 		
-		//wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+	//	wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 		//wanderSphere.transform.position = agent.transform.position;
 		
 	}
@@ -57,9 +57,9 @@ public class TrollScript : MonoBehaviour{
 		
 		//Debug.Log("Update is being called!");
 		
-		calculateVelocity();
 		DetermineBehaviors();
 		UpdateForces();
+		calculateVelocity();
 	}
 	
 	void DetermineBehaviors()
@@ -70,7 +70,7 @@ public class TrollScript : MonoBehaviour{
 		
 		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
 		
-		//Debug.Log(steedDistance);
+		Debug.Log(steedDistance);
 		
 		if (steedDistance <= 100)
 		{
@@ -80,20 +80,15 @@ public class TrollScript : MonoBehaviour{
 			applyForce(seekForce);			
 			//agent.SetDestination(seekForce);
 			
-			if (steedDistance < 5)
+			if (steedDistance < 10)
 			{
 				Destroy(steed);
 			}
 		}
 		else if (steedDistance > 100)
 		{	
-			Vector3 wanderForce = wander();
-			//Debug.Log(steedDistance);
-						
-			agent.SetDestination(wanderForce);			
+			wander();			
 		}
-
-		Vector3 wanderingForce = wander();
 	}
 	
 	private void calculateVelocity()
@@ -159,7 +154,7 @@ public class TrollScript : MonoBehaviour{
 		return fleeVector;
 	}
 	
-	private Vector3 wander()
+	private void wander()
 	{
 		float circleRadius = 20.0f; 
 		float circleDistance = 20.0f;
@@ -180,17 +175,13 @@ public class TrollScript : MonoBehaviour{
 		wanderAngle += randomNum * angleChange - angleChange * .5f;
 		
 		Vector3 wanderForce = circleCenter + displacement;
-		//Debug.DrawRay(agent.transform.position, wanderForce, Color.red);
+		Debug.DrawRay(agent.transform.position, wanderForce, Color.red);
 		
 		//wanderSphere.transform.position = agent.transform.position + wanderForce;
 		
 		wanderForce.Normalize();		
 		
 		applyForce(wanderForce);
-		
-		//Debug.Log("Wander was called!");
-		
-		return wanderForce;
 	}
 	
 	Vector3 setAngle(Vector3 displacement, float angle)
