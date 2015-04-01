@@ -193,6 +193,8 @@ public class SampleAgentScript : MonoBehaviour {
 		agent.SetDestination (fleeVector);
 	}
 	
+	
+	
 	Vector3 wander()
 	{
 		float circleRadius = 20.0f; 
