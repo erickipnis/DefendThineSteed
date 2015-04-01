@@ -85,7 +85,7 @@ public class TrollScript : MonoBehaviour{
 				Destroy(steed);
 			}
 		}
-		else if (steedDistance > 100)
+		else if (steeds == null || steedDistance > 100)
 		{	
 			wander();			
 		}
@@ -105,6 +105,8 @@ public class TrollScript : MonoBehaviour{
 		float distance = 0;
 		
 		GameObject closestSteed = null;
+		
+		steeds = GameObject.FindGameObjectsWithTag("Steed");
 		
 		for (int i = 0; i < steeds.Length; i++)
 		{
@@ -154,7 +156,7 @@ public class TrollScript : MonoBehaviour{
 		return fleeVector;
 	}
 	
-	private void wander()
+	private Vector3 wander()
 	{
 		float circleRadius = 20.0f; 
 		float circleDistance = 20.0f;
@@ -182,6 +184,8 @@ public class TrollScript : MonoBehaviour{
 		wanderForce.Normalize();		
 		
 		applyForce(wanderForce);
+		
+		return wanderForce;
 	}
 	
 	Vector3 setAngle(Vector3 displacement, float angle)
