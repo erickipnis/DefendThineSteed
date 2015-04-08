@@ -56,7 +56,7 @@ public class TrollScript : MonoBehaviour{
 		}
 		
 		//Debug.Log("Update is being called!");
-		
+
 		DetermineBehaviors();
 		UpdateForces();
 		calculateVelocity();

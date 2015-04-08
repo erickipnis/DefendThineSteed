@@ -1,10 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\TrollScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\SteedScript.cs">
     <Files>
-      <File FileName="Assets\Scripts\TrollScript.cs" Line="65" Column="2" />
-      <File FileName="Assets\Scripts\SteedScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\SteeringBehaviors.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\SteedScript.cs" Line="103" Column="5" />
+      <File FileName="Assets\Scripts\TrollScript.cs" Line="105" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

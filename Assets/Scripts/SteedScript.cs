@@ -57,9 +57,9 @@ void Update ()
 	
 	//Debug.Log("Update is being called!");
 	
-	calculateVelocity();
 	DetermineBehaviors();
 	UpdateForces();
+	calculateVelocity();
 }
 
 void DetermineBehaviors()
@@ -78,28 +78,38 @@ void DetermineBehaviors()
 	{
 		Vector3 seekForce = seek (playerPosition);
 		applyForce (seekForce);
-		Debug.Log(playerDistance);
+		//Debug.Log(playerDistance);
 
+		if (trollDistance <= 100)
+		{
+			//Debug.Log(trollDistance);
+			Vector3 fleeForce = flee(trollPosition);
+				
+			applyForce(fleeForce);			
+			//agent.SetDestination(seekForce);
+				
+		}	
 	}
-	if (trollDistance <= 100)
+	else if (playerDistance > 100)
 	{
-		//Debug.Log(trollDistance);
-		Vector3 fleeForce = flee(trollPosition);
-		
-		applyForce(fleeForce);			
-		//agent.SetDestination(seekForce);
-		
+		if (trollDistance <= 100)
+		{
+			//Debug.Log(trollDistance);
+			Vector3 fleeForce = flee(trollPosition);
+				
+			applyForce(fleeForce);			
+			//agent.SetDestination(seekForce);
+				
+		}	
+		else if (trolls == null || trollDistance > 100)
+		{	
+			
+			Vector3 wanderForce = wander();
+			//Debug.Log(trollDistance);
+			
+			//agent.SetDestination(wanderForce);			
+		}
 	}
-	else if (trollDistance > 100)
-	{	
-		//Vector3 wanderForce = wander();
-		//Debug.Log(trollDistance);
-		
-		//agent.SetDestination(wanderForce);			
-	}
-	
-	
-	Vector3 wanderingForce = wander();
 }
 
 private void calculateVelocity()
@@ -116,7 +126,9 @@ private GameObject findClosestTroll()
 	float distance = 0;
 	
 	GameObject closestTroll = null;
+
 	trolls = GameObject.FindGameObjectsWithTag("Troll");
+
 	for (int i = 0; i < trolls.Length; i++)
 	{
 		distance = Vector3.Distance(agent.transform.position, trolls[i].transform.position);
