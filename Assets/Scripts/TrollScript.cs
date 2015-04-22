@@ -6,6 +6,7 @@ public class TrollScript : MonoBehaviour{
 	NavMeshAgent agent;
 	
 	GameObject[] steeds; 
+	GameObject[] trolls;
 	//GameObject wanderSphere;
 	
 	public Vector3 targetSeek;
@@ -22,6 +23,14 @@ public class TrollScript : MonoBehaviour{
 	float seekWeight;
 	float fleeWeight;
 	float wanderWeight;
+	float sepearationWeight;
+	float cohesionWeight;
+	float alignmentWeight;
+
+	bool isWandering;
+	bool isSeeking;
+	bool isFleeing;
+	bool isFlocking;
 	
 	// Use this for initialization
 	void Start () 
@@ -34,17 +43,25 @@ public class TrollScript : MonoBehaviour{
 		
 		acceleration = new Vector3(0.0f, 0.0f, 0.0f);
 		
-		maxForce = 0.2f;
+		maxForce = 3.0f;
 		maxSpeed = 2.0f;
 		
 		steeds = GameObject.FindGameObjectsWithTag("Steed");
+		trolls = GameObject.FindGameObjectsWithTag("Troll");
 		//Debug.Log(steeds);
 		
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 		
 	//	wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 		//wanderSphere.transform.position = agent.transform.position;
-		
+		sepearationWeight = 0.5f;
+		cohesionWeight = 0.2f;
+		alignmentWeight = 0.2f;
+
+		isFlocking = true;
+		isWandering = true;
+		isSeeking = false;
+		isFleeing = false;
 	}
 	
 	// Update is called once per frame
@@ -54,7 +71,11 @@ public class TrollScript : MonoBehaviour{
 		{
 			steeds = GameObject.FindGameObjectsWithTag("Steed");
 		}
-		
+
+		if (trolls == null)
+		{
+			trolls = GameObject.FindGameObjectsWithTag("Troll");
+		}
 		//Debug.Log("Update is being called!");
 
 		DetermineBehaviors();
@@ -70,9 +91,20 @@ public class TrollScript : MonoBehaviour{
 		
 		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
 		
-		Debug.Log(steedDistance);
-		
+		//Debug.Log(steedDistance);
+
 		if (steedDistance <= 100)
+		{
+			isSeeking = true;
+			isWandering = false;
+		}
+		else if (steedDistance > 100)
+		{
+			isWandering = true;
+			isSeeking = false;
+		}
+		
+		if (isSeeking)
 		{
 			//Debug.Log(steedDistance);
 			Vector3 seekForce = seek(steedPosition);
@@ -85,9 +117,14 @@ public class TrollScript : MonoBehaviour{
 				Destroy(steed);
 			}
 		}
-		else if (steeds == null || steedDistance > 100)
+		else if (isWandering)
 		{	
-			wander();			
+			wander();
+		}
+
+		if (isFlocking)
+		{
+			flock();
 		}
 	}
 	
@@ -134,7 +171,7 @@ public class TrollScript : MonoBehaviour{
 		
 		steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
 		
-		applyForce(steerVector);
+		//applyForce(steerVector);
 		
 		return steerVector;
 	}
@@ -187,7 +224,129 @@ public class TrollScript : MonoBehaviour{
 		
 		return wanderForce;
 	}
-	
+
+	private void flock()
+	{
+		Vector3 alignment = Align();
+		Vector3 seperation = Seperate();
+		Vector3 cohesion = Cohesion();
+
+		alignment *= alignmentWeight;
+		seperation *= sepearationWeight;
+		cohesion *= cohesionWeight;
+
+		applyForce(alignment);
+		applyForce(seperation);
+		applyForce(cohesion);
+	}
+
+	private Vector3 Seperate()
+	{
+		float seperateDistance = 20.0f;
+
+		Vector3 sumVector = new Vector3(0.0f, 0.0f, 0.0f);
+
+		int count = 0;
+
+		for (int i = 0; i < trolls.Length; i++)
+		{
+			float distance = Vector3.Distance(agent.transform.position, trolls[i].transform.position);
+
+			if ((distance > 0) && (distance < seperateDistance))
+			{
+				Vector3 difference = agent.transform.position - trolls[i].transform.position;
+				difference.Normalize();
+				difference /= distance;
+
+				sumVector += difference;
+
+				count++;
+			}
+		}
+
+		if (count > 0)
+		{
+			sumVector /= count;
+			sumVector.Normalize();
+			sumVector *= maxSpeed;
+
+			Vector3 steerVector = sumVector - velocity;
+			steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
+
+			return steerVector;
+		}
+		else
+		{
+			return new Vector3(0.0f, 0.0f, 0.0f);
+		}
+	}
+
+	private Vector3 Align()
+	{
+		float neighborDistance = 50.0f;
+
+		Vector3 sumVector = new Vector3(0.0f, 0.0f, 0.0f);
+
+		int count = 0; 
+
+		for (int i = 0; i < trolls.Length; i++)
+		{
+			float distance = Vector3.Distance(agent.transform.position, trolls[i].transform.position);
+
+			if ((distance > 0) && (distance < neighborDistance))
+			{
+				sumVector += trolls[i].transform.position;
+				count++;
+			}
+		}
+
+		if (count > 0)
+		{
+			sumVector /= count;
+			sumVector.Normalize();
+			sumVector *= maxSpeed;
+
+			Vector3 steerVector = sumVector - velocity;
+			steerVector = Vector3.ClampMagnitude(steerVector, maxForce);
+
+			return steerVector;
+		}
+		else 
+		{
+			return new Vector3(0.0f, 0.0f, 0.0f);
+		}
+	}
+
+	private Vector3 Cohesion()
+	{
+		float neighborDistance = 50.0f;
+
+		Vector3 sumVector = new Vector3(0.0f, 0.0f, 0.0f);
+
+		int count = 0;
+
+		for (int i = 0; i < trolls.Length; i++)
+		{
+			float distance = Vector3.Distance(agent.transform.position,trolls[i].transform.position);
+
+			if ((distance > 0) && (distance < neighborDistance))
+			{
+				sumVector += trolls[i].transform.position;
+				count++;
+			}
+		}
+
+		if (count > 0)
+		{
+			sumVector /= count;
+			return seek(sumVector);
+		}
+		else 
+		{
+			return new Vector3(0.0f, 0.0f, 0.0f);
+		}
+	}
+
 	Vector3 setAngle(Vector3 displacement, float angle)
 	{
 		float length = displacement.magnitude;
