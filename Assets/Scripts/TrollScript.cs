@@ -31,6 +31,8 @@ public class TrollScript : MonoBehaviour{
 	bool isSeeking;
 	bool isFleeing;
 	bool isFlocking;
+
+	float timer;
 	
 	// Use this for initialization
 	void Start () 
@@ -62,6 +64,10 @@ public class TrollScript : MonoBehaviour{
 		isWandering = true;
 		isSeeking = false;
 		isFleeing = false;
+
+		timer = 0;
+
+		wander();
 	}
 	
 	// Update is called once per frame
@@ -78,13 +84,29 @@ public class TrollScript : MonoBehaviour{
 		}
 		//Debug.Log("Update is being called!");
 
-		DetermineBehaviors();
+
+		// If 1 second has gone by then make a new decision
+		if (timer >= 1.0f)
+		{
+			BayesScript.StartBayes();
+			//DetermineBehaviors(BayesScript.yesSeekOdds, BayesScript.noSeekOdds);
+
+			timer = 0.0f;
+		}
+
 		UpdateForces();
 		calculateVelocity();
+
+		timer += Time.deltaTime;
+		Debug.Log (timer);
 	}
-	
-	void DetermineBehaviors()
+
+	void DetermineBehaviors(float yesSeekOdds, float noSeekOdds)
 	{
+		float yesSeek = yesSeekOdds * 100;
+		float noSeek = noSeekOdds * 100;
+		int randomNum = Random.Range (0, 100);
+
 		GameObject steed = findClosestSteed();
 		
 		Vector3 steedPosition = steed.transform.position;
@@ -93,16 +115,27 @@ public class TrollScript : MonoBehaviour{
 		
 		//Debug.Log(steedDistance);
 
-		if (steedDistance <= 100)
+		if (randomNum >= 0 && randomNum < 50)
 		{
 			isSeeking = true;
 			isWandering = false;
 		}
-		else if (steedDistance > 100)
+		else if (randomNum >= 50 && randomNum < 100)
 		{
 			isWandering = true;
 			isSeeking = false;
 		}
+
+//		if (steedDistance <= 100)
+//		{
+//			isSeeking = true;
+//			isWandering = false;
+//		}
+//		else if (steedDistance > 100)
+//		{
+//			isWandering = true;
+//			isSeeking = false;
+//		}
 		
 		if (isSeeking)
 		{
@@ -115,6 +148,7 @@ public class TrollScript : MonoBehaviour{
 			if (steedDistance < 10)
 			{
 				Destroy(steed);
+				BayesScript.AddObs(100, true, false, true);
 			}
 		}
 		else if (isWandering)

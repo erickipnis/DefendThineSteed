@@ -1,9 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\controller.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\BayesScript.cs">
     <Files>
-      <File FileName="Assets\Scripts\controller.cs" Line="7" Column="2" />
-      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonController.js" Line="58" Column="30" />
+      <File FileName="Assets\Scripts\BayesScript.cs" Line="84" Column="17" />
+      <File FileName="Assets\Scripts\FileManager.cs" Line="24" Column="63" />
+      <File FileName="Assets\Scripts\controller.cs" Line="10" Column="3" />
+      <File FileName="Assets\Scripts\TrollScript.cs" Line="139" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
