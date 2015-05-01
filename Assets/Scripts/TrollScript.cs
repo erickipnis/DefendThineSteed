@@ -32,10 +32,7 @@ public class TrollScript : MonoBehaviour{
 	bool isFleeing;
 	bool isFlocking;
 
-<<<<<<< HEAD
 	float timer;
-=======
->>>>>>> 2ce4805d8473f15403d12ca9c0de9158307fe86d
 	
 	// Use this for initialization
 	void Start () 
