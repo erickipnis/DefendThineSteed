@@ -8,7 +8,7 @@ public class TrollScript : MonoBehaviour{
 	GameObject[] steeds; 
 	GameObject[] trolls;
 	//GameObject wanderSphere;
-	
+	//GameObject safeZone;
 	public Vector3 targetSeek;
 
 	Vector3 previousPosition;
@@ -32,7 +32,10 @@ public class TrollScript : MonoBehaviour{
 	bool isFleeing;
 	bool isFlocking;
 
+<<<<<<< HEAD
 	float timer;
+=======
+>>>>>>> 2ce4805d8473f15403d12ca9c0de9158307fe86d
 	
 	// Use this for initialization
 	void Start () 
@@ -51,7 +54,7 @@ public class TrollScript : MonoBehaviour{
 		steeds = GameObject.FindGameObjectsWithTag("Steed");
 		trolls = GameObject.FindGameObjectsWithTag("Troll");
 		//Debug.Log(steeds);
-		
+		//safeZone = GameObject.FindGameObjectWithTag ("safe");
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 		
 	//	wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -110,9 +113,9 @@ public class TrollScript : MonoBehaviour{
 		GameObject steed = findClosestSteed();
 		
 		Vector3 steedPosition = steed.transform.position;
-		
+		//Vector3 safePosition = safeZone.transform.position;
 		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
-		
+		//float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
 		//Debug.Log(steedDistance);
 
 		if (randomNum >= 0 && randomNum < 50)
@@ -154,6 +157,17 @@ public class TrollScript : MonoBehaviour{
 		else if (isWandering)
 		{	
 			wander();
+			/*if(safeDistance <= 15)
+			{
+				isFleeing = true;
+				Vector3 fleeForce = flee(safePosition);
+				applyForce (fleeForce);
+			}
+			else if(safeDistance > 15)
+			{
+				isFleeing = false;
+			}
+			*/
 		}
 
 		if (isFlocking)
