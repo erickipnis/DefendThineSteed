@@ -8,6 +8,7 @@ NavMeshAgent agent;
 GameObject[] trolls; 
 //GameObject wanderSphere;
 GameObject player;
+GameObject safeZone;
 public Vector3 targetSeek;
 
 Vector3 previousPosition;
@@ -40,6 +41,7 @@ void Start ()
 	trolls = GameObject.FindGameObjectsWithTag("Troll");
 	//Debug.Log(steeds);
 	player = GameObject.FindGameObjectWithTag("Player");
+	safeZone = GameObject.FindGameObjectWithTag("safe");
 	targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 	
 	//wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -68,9 +70,11 @@ void DetermineBehaviors()
 	
 	Vector3 trollPosition = troll.transform.position;
 	Vector3 playerPosition = player.transform.position;
+	Vector3 safePosition = safeZone.transform.position;
 	
 	float trollDistance = Vector3.Distance(agent.transform.position, trollPosition);
 	float playerDistance = Vector3.Distance(agent.transform.position, playerPosition);
+	float safeDistance = Vector3.Distance(agent.transform.position, safePosition);
 	
 	//Debug.Log(trollDistance);
 	
@@ -88,7 +92,12 @@ void DetermineBehaviors()
 			applyForce(fleeForce);			
 			//agent.SetDestination(seekForce);
 				
-		}	
+		}
+		if(safeDistance <= 10)
+		{
+				seekForce = seek (safePosition);
+				Destroy (this);
+		}
 	}
 	else if (playerDistance > 100)
 	{
