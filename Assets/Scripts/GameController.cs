@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour {
 
 		if(GUI.Button (resetButton, "RESTART"))
 		{
+			BayesScript.DumpToFile(100, true, false, true);
 			Application.LoadLevel(Application.loadedLevel);
 		}
 		if (GUI.Button (endButton, "END"))

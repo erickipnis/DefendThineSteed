@@ -57,42 +57,25 @@ public class BayesScript : MonoBehaviour
 		
 	}
 
-	public static void StartBayes()
+	public static void LoadAndBuildData()
 	{
-		// Start with the table from the example
+		// Read the table in and build the stats
 		ReadObsTab(filePath);
-		//DumpTab();
 		BuildStats();
-		//DumpStats();
-		
+	}
+
+	public static void GetBayesOdds()
+	{		
 		// Test to see if distance is 100, is wandering, not seeking currently
 		double seekYes = CalcBayes(100, true, false, true);
 		double seekNo =  CalcBayes(100, true, false, false);
 		double yesNno = seekYes + seekNo;
 		
-		// TODO: PASS THESE VALUES TO DETERMINEBEHAVIOURS TO CALCULATE RANDOM TO THEN SEEK OR WANDER
-		// ALSO HAVE TO THEN WRITE ORIGINAL VALUES BACK OUT TO FILE UPON SUCCESS SOMEHOW
-		// ONLY TRY TO MAKE A DECISION ONE TIME PER SECOND
 		yesSeekOdds = seekYes / yesNno;
 		noSeekOdds = seekNo / yesNno;
 		
 		Debug.Log(seekYes + " " + seekNo + " " +
 		          yesSeekOdds + " " + noSeekOdds);		
-		
-//		// Rebuild the statistics
-//		BuildStats();
-//		DumpStats();
-//		
-//		// Test again to see if distance is 100, is wandering, not seeking currently is now more likely
-//		seekYes = CalcBayes(100, true, false, true);
-//		seekNo = CalcBayes(100, true, false, false);
-//		yesNno = seekYes + seekNo;
-//		
-//		yesSeekOdds = seekYes / yesNno;
-//		noSeekOdds = seekNo / yesNno;
-//		
-//		Debug.Log(seekYes + " " + seekNo + " " +
-//		          yesSeekOdds + " " + noSeekOdds);
 	}
 
 	public static void DumpToFile(int distance, bool wandering, bool seeking, bool seek)
