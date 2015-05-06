@@ -8,7 +8,7 @@ public class TrollScript : MonoBehaviour{
 	GameObject[] steeds; 
 	GameObject[] trolls;
 	//GameObject wanderSphere;
-	GameObject safeZone;
+	//GameObject safeZone;
 	public Vector3 targetSeek;
 
 	Vector3 previousPosition;
@@ -32,6 +32,13 @@ public class TrollScript : MonoBehaviour{
 	bool isFleeing;
 	bool isFlocking;
 
+	float timer;
+	float fitness;
+	float finalFitness;
+
+	int index;
+
+	public static float steedSeekDistance;
 	
 	// Use this for initialization
 	void Start () 
@@ -50,7 +57,7 @@ public class TrollScript : MonoBehaviour{
 		steeds = GameObject.FindGameObjectsWithTag("Steed");
 		trolls = GameObject.FindGameObjectsWithTag("Troll");
 		//Debug.Log(steeds);
-		safeZone = GameObject.FindGameObjectWithTag ("safe");
+		//safeZone = GameObject.FindGameObjectWithTag ("safe");
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 		
 	//	wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -63,6 +70,22 @@ public class TrollScript : MonoBehaviour{
 		isWandering = true;
 		isSeeking = false;
 		isFleeing = false;
+
+		timer = 0;
+		fitness = 100;
+		finalFitness = 0;
+		index = GeneticAlgorithm.index;
+
+		if (GeneticAlgorithm.index < 5)
+		{
+			steedSeekDistance = GeneticAlgorithm.phenotypeArray[index];
+			GeneticAlgorithm.index = GeneticAlgorithm.index + 1;
+			Debug.Log(steedSeekDistance);
+		}
+
+		wander();
+
+		//BayesScript.LoadAndBuildData();
 	}
 	
 	// Update is called once per frame
@@ -79,27 +102,74 @@ public class TrollScript : MonoBehaviour{
 		}
 		//Debug.Log("Update is being called!");
 
-		DetermineBehaviors();
+
+		// If 1 second has gone by then make a new decision
+		//if (timer >= 1.0f)
+		//{
+			//BayesScript.GetBayesOdds();
+			//DetermineBehaviors((float)BayesScript.yesSeekOdds, (float)BayesScript.noSeekOdds);
+		DetermineBehaviors ();
+
+			//timer = 0.0f;
+		//}
+
 		UpdateForces();
 		calculateVelocity();
+
+		timer += Time.deltaTime;
+		fitness -= Time.deltaTime * 0.5f;
+		//Debug.Log (timer);
 	}
-	
+
 	void DetermineBehaviors()
 	{
+//		float yesSeek = yesSeekOdds * 100;
+//		float noSeek = noSeekOdds * 100;
+//		int randomNum = Random.Range (0, 100);
+//		Debug.Log (yesSeek.ToString() + "    " + noSeek.ToString());
+
 		GameObject steed = findClosestSteed();
 		
 		Vector3 steedPosition = steed.transform.position;
-		Vector3 safePosition = safeZone.transform.position;
+		//Vector3 safePosition = safeZone.transform.position;
 		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
-		float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
+		//float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
 		//Debug.Log(steedDistance);
 
-		if (steedDistance <= 100)
+		// For first time random 50% chance to wander or seek
+//		if (yesSeek == noSeek)
+//		{
+//			float startRandom = Random.Range(0, 2); // 0 or 1
+//
+//			if (startRandom == 1)
+//			{
+//				isSeeking = true;
+//				isWandering = false;
+//			}
+//			else if (startRandom == 0)
+//			{
+//				isWandering = true;
+//				isSeeking = false;
+//			}
+//		}
+//		else if (randomNum >= 0 && randomNum <= yesSeek)
+//		{
+//			isSeeking = true;
+//			isWandering = false;
+//		}
+//		else if (randomNum > yesSeek && randomNum < 100)
+//		{
+//			isWandering = true;
+//			isSeeking = false;
+//		}
+
+
+		if (steedDistance <= steedSeekDistance)
 		{
 			isSeeking = true;
 			isWandering = false;
 		}
-		else if (steedDistance > 100)
+		else if (steedDistance > steedSeekDistance)
 		{
 			isWandering = true;
 			isSeeking = false;
@@ -112,36 +182,42 @@ public class TrollScript : MonoBehaviour{
 			
 			applyForce(seekForce);			
 			//agent.SetDestination(seekForce);
-			if(safeDistance <= 101)
+
+			// Didn't catch anything within 5 seconds so fitness = 0
+			if (timer > 5.0f)
 			{
-				isFleeing = true;
-				Vector3 fleeForce = flee(safePosition);
-				applyForce (fleeForce);
+				finalFitness = 0;
+				GeneticAlgorithm.CheckInIndividual(finalFitness, index);
 			}
-			if(safeDistance > 101)
-			{
-				isFleeing = false;
-			}
-			if (steedDistance < 10)
+			
+			if (steedDistance < 20)
 			{
 				Destroy(steed);
+
+				// Caught the steed within 5 seconds, give it a fitness based on time passed
+				if (timer <= 5.0f)
+				{
+					finalFitness = fitness;
+					GeneticAlgorithm.CheckInIndividual(finalFitness, index);
+				}
+
+				//BayesScript.AddObs(100, true, false, true);
 			}
 		}
 		else if (isWandering)
 		{	
 			wander();
-			if(safeDistance <= 75)
+			/*if(safeDistance <= 15)
 			{
 				isFleeing = true;
 				Vector3 fleeForce = flee(safePosition);
 				applyForce (fleeForce);
 			}
-			else if(safeDistance > 75)
+			else if(safeDistance > 15)
 			{
 				isFleeing = false;
-				wander ();
 			}
-
+			*/
 		}
 
 		if (isFlocking)

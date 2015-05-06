@@ -6,18 +6,19 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance = null;
 	private int level = 0;
 
-	void Awake(){
+	void Start(){
 		if (instance == null) {
 			instance = this;
 		} 
 		else if (instance != this) {
 			Destroy (gameObject);
 			DontDestroyOnLoad (gameObject);
-			InitGame ();
+			InitGame();
 		}
 	}
 	// Use this for initialization
-	void InitGame () {
+	void InitGame() 
+	{
 
 	}
 	

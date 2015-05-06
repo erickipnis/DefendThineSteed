@@ -16,10 +16,13 @@ public class GameController : MonoBehaviour {
 
 		if(GUI.Button (resetButton, "RESTART"))
 		{
+			//BayesScript.DumpToFile(100, true, false, true);
+			GeneticAlgorithm.ShutdownGA();
 			Application.LoadLevel(Application.loadedLevel);
 		}
 		if (GUI.Button (endButton, "END"))
 		{
+			GeneticAlgorithm.ShutdownGA();
 			Application.Quit ();
 		}
 	}
