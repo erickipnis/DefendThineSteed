@@ -50,6 +50,8 @@
      <Compile Include="Assets\Scripts\FileManager.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\GeneticAlgorithm.cs" />
+     <Compile Include="Assets\Scripts\PrefabGenerator.cs" />
      <Compile Include="Assets\Scripts\SampleAgentScript.cs" />
      <Compile Include="Assets\Scripts\SteedScript.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviors.cs" />
