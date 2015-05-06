@@ -8,7 +8,7 @@ public class TrollScript : MonoBehaviour{
 	GameObject[] steeds; 
 	GameObject[] trolls;
 	//GameObject wanderSphere;
-	//GameObject safeZone;
+	GameObject safeZone;
 	public Vector3 targetSeek;
 
 	Vector3 previousPosition;
@@ -50,7 +50,7 @@ public class TrollScript : MonoBehaviour{
 		steeds = GameObject.FindGameObjectsWithTag("Steed");
 		trolls = GameObject.FindGameObjectsWithTag("Troll");
 		//Debug.Log(steeds);
-		//safeZone = GameObject.FindGameObjectWithTag ("safe");
+		safeZone = GameObject.FindGameObjectWithTag ("safe");
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 		
 	//	wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -89,9 +89,9 @@ public class TrollScript : MonoBehaviour{
 		GameObject steed = findClosestSteed();
 		
 		Vector3 steedPosition = steed.transform.position;
-		//Vector3 safePosition = safeZone.transform.position;
+		Vector3 safePosition = safeZone.transform.position;
 		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
-		//float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
+		float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
 		//Debug.Log(steedDistance);
 
 		if (steedDistance <= 100)
@@ -112,7 +112,16 @@ public class TrollScript : MonoBehaviour{
 			
 			applyForce(seekForce);			
 			//agent.SetDestination(seekForce);
-			
+			if(safeDistance <= 101)
+			{
+				isFleeing = true;
+				Vector3 fleeForce = flee(safePosition);
+				applyForce (fleeForce);
+			}
+			if(safeDistance > 101)
+			{
+				isFleeing = false;
+			}
 			if (steedDistance < 10)
 			{
 				Destroy(steed);
@@ -121,17 +130,18 @@ public class TrollScript : MonoBehaviour{
 		else if (isWandering)
 		{	
 			wander();
-			/*if(safeDistance <= 15)
+			if(safeDistance <= 75)
 			{
 				isFleeing = true;
 				Vector3 fleeForce = flee(safePosition);
 				applyForce (fleeForce);
 			}
-			else if(safeDistance > 15)
+			else if(safeDistance > 75)
 			{
 				isFleeing = false;
+				wander ();
 			}
-			*/
+
 		}
 
 		if (isFlocking)

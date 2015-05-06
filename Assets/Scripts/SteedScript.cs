@@ -14,6 +14,8 @@ public Vector3 targetSeek;
 Vector3 previousPosition;
 Vector3 velocity;
 Vector3 acceleration;
+	Vector3 seekForce;
+	Vector3 fleeForce;
 
 float wanderAngle = 15.0f;
 
@@ -78,47 +80,23 @@ void DetermineBehaviors()
 	
 	//Debug.Log(trollDistance);
 	
-	if (playerDistance <= 100)
-	{
-		Vector3 seekForce = seek (playerPosition);
-		applyForce (seekForce);
-		//Debug.Log(playerDistance);
-
-		if (trollDistance <= 100)
-		{
-			//Debug.Log(trollDistance);
-			Vector3 fleeForce = flee(trollPosition);
-				
-			applyForce(fleeForce);			
-			//agent.SetDestination(seekForce);
-				
+	if(trollDistance <= 100 || playerDistance <= 101){
+		if(playerDistance <= 100){
+			if(safeDistance <= 25){
+				seekForce = seek(safePosition);
+				Destroy(agent.gameObject);
+			} // go to safe
+			seekForce = seek(playerPosition);
+		} // follow player
+		fleeForce = flee(trollPosition);
+	} // flee troll
+	if (seekForce != null) {
+			applyForce (seekForce);
 		}
-		if(safeDistance <= 10)
-		{
-				seekForce = seek (safePosition);
-				Destroy (this);
+	if (fleeForce != null) {
+			applyForce (fleeForce);
 		}
-	}
-	else if (playerDistance > 100)
-	{
-		if (trollDistance <= 100)
-		{
-			//Debug.Log(trollDistance);
-			Vector3 fleeForce = flee(trollPosition);
-				
-			applyForce(fleeForce);			
-			//agent.SetDestination(seekForce);
-				
-		}	
-		else if (trolls == null || trollDistance > 100)
-		{	
-			
-			Vector3 wanderForce = wander();
-			//Debug.Log(trollDistance);
-			
-			//agent.SetDestination(wanderForce);			
-		}
-	}
+	Vector3 wanderForce = wander();
 }
 
 private void calculateVelocity()
