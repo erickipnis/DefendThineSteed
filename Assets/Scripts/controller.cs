@@ -3,7 +3,7 @@ using System.Collections;
 
 public class controller : MonoBehaviour {
 	private Vector3 moveDirection = Vector3.zero;
-	public float speed = 5.0f;
+	public float speed = 40.0f;
 
 	// Use this for initialization
 	void Start () {

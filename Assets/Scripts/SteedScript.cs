@@ -14,8 +14,8 @@ public Vector3 targetSeek;
 Vector3 previousPosition;
 Vector3 velocity;
 Vector3 acceleration;
-	Vector3 seekForce;
-	Vector3 fleeForce;
+Vector3 seekForce;
+Vector3 fleeForce;
 
 float wanderAngle = 15.0f;
 
@@ -25,6 +25,11 @@ private float maxForce;
 float seekWeight;
 float fleeWeight;
 float wanderWeight;
+
+bool isFleeing;
+bool isWandering;
+bool isSeekingChar;
+bool isSeekingSafe;
 
 // Use this for initialization
 void Start () 
@@ -68,36 +73,84 @@ void Update ()
 
 void DetermineBehaviors()
 {
-	GameObject troll = findClosestTroll();
+	GameObject troll = findClosestTroll ();
 	
 	Vector3 trollPosition = troll.transform.position;
 	Vector3 playerPosition = player.transform.position;
 	Vector3 safePosition = safeZone.transform.position;
 	
-	float trollDistance = Vector3.Distance(agent.transform.position, trollPosition);
-	float playerDistance = Vector3.Distance(agent.transform.position, playerPosition);
-	float safeDistance = Vector3.Distance(agent.transform.position, safePosition);
+	float trollDistance = Vector3.Distance (agent.transform.position, trollPosition);
+	float playerDistance = Vector3.Distance (agent.transform.position, playerPosition);
+	float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
 	
-	//Debug.Log(trollDistance);
-	
-	if(trollDistance <= 100 || playerDistance <= 101){
-		if(playerDistance <= 100){
-			if(safeDistance <= 25){
-				seekForce = seek(safePosition);
-				Destroy(agent.gameObject);
+	/*if (trollDistance <= 100) 
+		{
+		if (playerDistance <= 100) 
+			{
+			if (safeDistance <= 25) 
+			{
+				seekForce = seek (safePosition);
+				applyForce (seekForce);
+				Destroy (agent.gameObject);
 			} // go to safe
-			seekForce = seek(playerPosition);
+			seekForce = seek (safePosition);
+			applyForce (playerPosition);
 		} // follow player
-		fleeForce = flee(trollPosition);
+		fleeForce = flee (trollPosition);
+		applyForce (fleeForce);
 	} // flee troll
-	if (seekForce != null) {
+	else 
+	{
+		Vector3 wanderForce = wander ();
+	}*/
+		if (playerDistance <= 100)
+		{
+			Vector3 seekForce = seek (playerPosition);
+			//Debug.Log(playerDistance);
+			
+			if (trollDistance <= 100)
+			{
+				//Debug.Log(trollDistance);
+				Vector3 fleeForce = flee(trollPosition);
+				
+				applyForce(fleeForce);			
+				//agent.SetDestination(seekForce);
+				
+			}
+			if(safeDistance <= 25)
+			{
+				seekForce = seek (safePosition);
+				//applyForce (seekForce);
+				Save.score += 1;
+				Destroy (agent.gameObject);
+				
+			}
 			applyForce (seekForce);
+
 		}
-	if (fleeForce != null) {
-			applyForce (fleeForce);
+		else if (playerDistance > 100)
+		{
+			if (trollDistance <= 100)
+			{
+				//Debug.Log(trollDistance);
+				Vector3 fleeForce = flee(trollPosition);
+				
+				applyForce(fleeForce);			
+				//agent.SetDestination(seekForce);
+				
+			}	
+			else if (trolls == null || trollDistance > 100)
+			{	
+				
+				Vector3 wanderForce = wander();
+				//Debug.Log(trollDistance);
+				
+				//agent.SetDestination(wanderForce);			
+			}
 		}
-	Vector3 wanderForce = wander();
+	
 }
+
 
 private void calculateVelocity()
 {

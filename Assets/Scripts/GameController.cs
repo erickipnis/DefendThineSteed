@@ -8,22 +8,30 @@ public class GameController : MonoBehaviour {
 		const int buttonWidth = 100;
 		const int buttonHeight = 75;
 
-		Rect resetButton = new Rect (Screen.width - (buttonWidth * 2), Screen.height -
+		Rect resetButton = new Rect (Screen.width - (buttonWidth + 1), Screen.height -
 						(buttonHeight + 10), buttonWidth, buttonHeight);
 
-		Rect endButton = new Rect (Screen.width - buttonWidth, Screen.height - 
-						(buttonHeight + 10), buttonWidth, buttonHeight);
 
 		if(GUI.Button (resetButton, "RESTART"))
 		{
 			//BayesScript.DumpToFile(100, true, false, true);
-			GeneticAlgorithm.ShutdownGA();
 			Application.LoadLevel(Application.loadedLevel);
-		}
-		if (GUI.Button (endButton, "END"))
-		{
 			GeneticAlgorithm.ShutdownGA();
-			Application.Quit ();
+		}
+	}
+
+	void Update()
+	{
+		if (Save.score + Loss.score == PrefabGenerator.steeds) 
+		{
+			if(Save.score > Loss.score)
+			{
+				Application.LoadLevel ("WinScene");
+			}
+			if(Save.score < Loss.score)
+			{
+				Application.LoadLevel("LoseScene");
+			}
 		}
 	}
 }
