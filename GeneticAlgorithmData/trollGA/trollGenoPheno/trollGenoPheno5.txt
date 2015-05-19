@@ -1,0 +1,5 @@
+Geno: 107, SteedSeekDistance: 125.3906
+Geno: 109, SteedSeekDistance: 127.7344
+Geno: 79, SteedSeekDistance: 92.57813
+Geno: 107, SteedSeekDistance: 125.3906
+Geno: 127, SteedSeekDistance: 148.8281

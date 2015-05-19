@@ -1,0 +1,5 @@
+Geno: 186, SteedFleeDistance: 217.9688
+Geno: 186, SteedFleeDistance: 217.9688
+Geno: 186, SteedFleeDistance: 217.9688
+Geno: 170, SteedFleeDistance: 199.2188
+Geno: 186, SteedFleeDistance: 217.9688

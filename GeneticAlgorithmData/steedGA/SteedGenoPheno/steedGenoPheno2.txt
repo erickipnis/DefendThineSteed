@@ -1,0 +1,5 @@
+Geno: 38, SteedFleeDistance: 44.53125
+Geno: 38, SteedFleeDistance: 44.53125
+Geno: 36, SteedFleeDistance: 42.1875
+Geno: 134, SteedFleeDistance: 157.0313
+Geno: 32, SteedFleeDistance: 37.5

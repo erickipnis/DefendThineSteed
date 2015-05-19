@@ -1,0 +1,5 @@
+Geno: 74, SteedFleeDistance: 86.71875
+Geno: 222, SteedFleeDistance: 260.1563
+Geno: 221, SteedFleeDistance: 258.9844
+Geno: 101, SteedFleeDistance: 118.3594
+Geno: 19, SteedFleeDistance: 22.26563

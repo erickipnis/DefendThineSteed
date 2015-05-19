@@ -1,0 +1,5 @@
+Geno: 132, SteedFleeDistance: 154.6875
+Geno: 130, SteedFleeDistance: 152.3438
+Geno: 130, SteedFleeDistance: 152.3438
+Geno: 166, SteedFleeDistance: 194.5313
+Geno: 196, SteedFleeDistance: 229.6875

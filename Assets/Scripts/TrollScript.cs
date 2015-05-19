@@ -31,19 +31,27 @@ public class TrollScript : MonoBehaviour{
 	bool isSeeking;
 	bool isFleeing;
 	bool isFlocking;
+	bool captured;
 
 	float timer;
 	float fitness;
-	float finalFitness;
 
 	int index;
 
-	public static float steedSeekDistance;
-	
+	float steedSeekDistance;
+	uint chromosome;
+
 	// Use this for initialization
 	void Start () 
 	{
 		agent = GetComponent<NavMeshAgent> ();
+
+//		while (transform.position.y > 0 || agent.transform.position.y > 0)
+//		{
+//			Vector3 randomPosition = new Vector3(Random.Range(50, 450), 0.0f, Random.Range(50, 450));
+//			transform.position = randomPosition;
+//			agent.transform.position = randomPosition;
+//		}
 		
 		previousPosition = new Vector3(0.0f, 0.0f, 0.0f);
 		
@@ -59,9 +67,7 @@ public class TrollScript : MonoBehaviour{
 		//Debug.Log(steeds);
 		//safeZone = GameObject.FindGameObjectWithTag ("safe");
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
-		
-	//	wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		//wanderSphere.transform.position = agent.transform.position;
+
 		sepearationWeight = 0.5f;
 		cohesionWeight = 0.2f;
 		alignmentWeight = 0.2f;
@@ -73,15 +79,17 @@ public class TrollScript : MonoBehaviour{
 
 		timer = 0;
 		fitness = 100;
-		finalFitness = 0;
-		index = GeneticAlgorithm.index;
+		index = TrollGeneticAlgorithm.index;
 
-		if (GeneticAlgorithm.index < 5)
+		if (TrollGeneticAlgorithm.index < 5)
 		{
-			steedSeekDistance = GeneticAlgorithm.phenotypeArray[index];
-			GeneticAlgorithm.index = GeneticAlgorithm.index + 1;
-			Debug.Log(steedSeekDistance);
+			chromosome = TrollGeneticAlgorithm.chroms[index];
+			//steedSeekDistance = TrollGeneticAlgorithm.phenos[index];
+			steedSeekDistance = 148; // locked down value while steeds are evolved individually
+			TrollGeneticAlgorithm.index = TrollGeneticAlgorithm.index + 1;
 		}
+	
+		captured = false;
 
 		wander();
 
@@ -91,6 +99,15 @@ public class TrollScript : MonoBehaviour{
 	// Update is called once per frame
 	void Update () 
 	{
+//		Debug.Log ("Troll Transform: " + transform.position.y + " Troll Agent: " + agent.transform.position.y);
+//
+//		if (transform.position.y > 0.2f || agent.transform.position.y > 0.2f)
+//		{
+//			Vector3 randomPosition = new Vector3(Random.Range(50, 450), 0.0f, Random.Range(50, 450));
+//			transform.position = randomPosition;
+//			agent.transform.position = randomPosition;
+//		}
+
 		if (steeds == null)
 		{
 			steeds = GameObject.FindGameObjectsWithTag("Steed");
@@ -100,6 +117,7 @@ public class TrollScript : MonoBehaviour{
 		{
 			trolls = GameObject.FindGameObjectsWithTag("Troll");
 		}
+
 		//Debug.Log("Update is being called!");
 
 
@@ -174,7 +192,7 @@ public class TrollScript : MonoBehaviour{
 			isWandering = true;
 			isSeeking = false;
 		}
-		
+
 		if (isSeeking)
 		{
 			//Debug.Log(steedDistance);
@@ -182,23 +200,17 @@ public class TrollScript : MonoBehaviour{
 			
 			applyForce(seekForce);			
 			//agent.SetDestination(seekForce);
-
-			// Didn't catch anything within 5 seconds so fitness = 0
-			if (timer > 5.0f)
-			{
-				finalFitness = 0;
-				GeneticAlgorithm.CheckInIndividual(finalFitness, index);
-			}
 			
 			if (steedDistance < 20)
 			{
 				Destroy(steed);
+				TrollGeneticAlgorithm.steedsCaptured[index] = TrollGeneticAlgorithm.steedsCaptured[index] + 1;
 
 				// Caught the steed within 5 seconds, give it a fitness based on time passed
-				if (timer <= 5.0f)
+				if (timer <= 10.0f && captured == false)
 				{
-					finalFitness = fitness;
-					GeneticAlgorithm.CheckInIndividual(finalFitness, index);
+					TrollGeneticAlgorithm.fitnessArray[index] = fitness;
+					captured = true;
 				}
 
 				//BayesScript.AddObs(100, true, false, true);

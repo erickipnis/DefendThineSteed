@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GameController : MonoBehaviour {
@@ -17,13 +17,31 @@ public class GameController : MonoBehaviour {
 		if(GUI.Button (resetButton, "RESTART"))
 		{
 			//BayesScript.DumpToFile(100, true, false, true);
-			GeneticAlgorithm.ShutdownGA();
+			TrollGeneticAlgorithm.ShutdownGA();
+			TrollGeneticAlgorithm.WritePhenotypes();		
+			TrollGeneticAlgorithm.Reset();		
+
+			SteedGeneticAlgorithm.ShutdownGA();
+			SteedGeneticAlgorithm.WritePhenotypes();
+			SteedGeneticAlgorithm.Reset();
+
+			BayesScript.DumpToFile();
+
 			Application.LoadLevel(Application.loadedLevel);
 		}
 		if (GUI.Button (endButton, "END"))
 		{
-			GeneticAlgorithm.ShutdownGA();
-			Application.Quit ();
+			TrollGeneticAlgorithm.ShutdownGA();
+			TrollGeneticAlgorithm.WritePhenotypes();
+			TrollGeneticAlgorithm.Reset();
+
+			SteedGeneticAlgorithm.ShutdownGA();
+			SteedGeneticAlgorithm.WritePhenotypes();
+			SteedGeneticAlgorithm.Reset();
+
+			BayesScript.DumpToFile();
+
+			Application.Quit();
 		}
 	}
 }

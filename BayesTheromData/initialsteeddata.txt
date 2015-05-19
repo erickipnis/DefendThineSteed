@@ -1,0 +1,6 @@
+wander 100 100 True
+wander 100 100 False
+seek 100 100 True
+seek 100 100 False
+flee 100 100 True
+flee 100 100 False

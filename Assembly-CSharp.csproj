@@ -50,12 +50,13 @@
      <Compile Include="Assets\Scripts\FileManager.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\GeneticAlgorithm.cs" />
      <Compile Include="Assets\Scripts\PrefabGenerator.cs" />
      <Compile Include="Assets\Scripts\SampleAgentScript.cs" />
+     <Compile Include="Assets\Scripts\SteedGeneticAlgorithm.cs" />
      <Compile Include="Assets\Scripts\SteedScript.cs" />
      <Compile Include="Assets\Scripts\SteeringBehaviors.cs" />
      <Compile Include="Assets\Scripts\TitleManager.cs" />
+     <Compile Include="Assets\Scripts\TrollGeneticAlgorithm.cs" />
      <Compile Include="Assets\Scripts\TrollScript.cs" />
      <Compile Include="Assets\Scripts\controller.cs" />
      <None Include="Assets\Prefab\Earthborn Troll\Shader\Alpha_Texture.shader" />

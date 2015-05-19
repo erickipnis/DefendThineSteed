@@ -1,0 +1,5 @@
+Geno: 206, SteedFleeDistance: 241.4063
+Geno: 206, SteedFleeDistance: 241.4063
+Geno: 206, SteedFleeDistance: 241.4063
+Geno: 216, SteedFleeDistance: 253.125
+Geno: 216, SteedFleeDistance: 253.125
