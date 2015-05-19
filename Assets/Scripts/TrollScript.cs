@@ -8,7 +8,7 @@ public class TrollScript : MonoBehaviour{
 	GameObject[] steeds; 
 	GameObject[] trolls;
 	//GameObject wanderSphere;
-	//GameObject safeZone;
+	GameObject safeZone;
 	public Vector3 targetSeek;
 
 	Vector3 previousPosition;
@@ -60,12 +60,12 @@ public class TrollScript : MonoBehaviour{
 		acceleration = new Vector3(0.0f, 0.0f, 0.0f);
 		
 		maxForce = 3.0f;
-		maxSpeed = 2.0f;
+		maxSpeed = 1.0f;
 		
 		steeds = GameObject.FindGameObjectsWithTag("Steed");
 		trolls = GameObject.FindGameObjectsWithTag("Troll");
 		//Debug.Log(steeds);
-		//safeZone = GameObject.FindGameObjectWithTag ("safe");
+		safeZone = GameObject.FindGameObjectWithTag ("safe");
 		targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
 
 		sepearationWeight = 0.5f;
@@ -149,9 +149,9 @@ public class TrollScript : MonoBehaviour{
 		GameObject steed = findClosestSteed();
 		
 		Vector3 steedPosition = steed.transform.position;
-		//Vector3 safePosition = safeZone.transform.position;
+		Vector3 safePosition = safeZone.transform.position;
 		float steedDistance = Vector3.Distance(agent.transform.position, steedPosition);
-		//float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
+		float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
 		//Debug.Log(steedDistance);
 
 		// For first time random 50% chance to wander or seek
@@ -200,9 +200,23 @@ public class TrollScript : MonoBehaviour{
 			
 			applyForce(seekForce);			
 			//agent.SetDestination(seekForce);
+
+			if(safeDistance < 60)
+			{
+				Vector3 fleeForce = flee (safePosition);
+				applyForce (fleeForce);
+			}
+
+			// Didn't catch anything within 5 seconds so fitness = 0
+			if (timer > 5.0f)
+			{
+				finalFitness = 0;
+				GeneticAlgorithm.CheckInIndividual(finalFitness, index);
+			}
 			
 			if (steedDistance < 20)
 			{
+				Loss.score += 1;
 				Destroy(steed);
 				TrollGeneticAlgorithm.steedsCaptured[index] = TrollGeneticAlgorithm.steedsCaptured[index] + 1;
 
@@ -218,6 +232,13 @@ public class TrollScript : MonoBehaviour{
 		}
 		else if (isWandering)
 		{	
+
+			if (safeDistance < 60)
+			{
+				Vector3 fleeForce = flee (safePosition);
+				applyForce(fleeForce);
+
+			}
 			wander();
 			/*if(safeDistance <= 15)
 			{
@@ -486,7 +507,5 @@ public class TrollScript : MonoBehaviour{
 		acceleration += force;
 		acceleration.y = 0;
 	}
-	
-	
 	
 }

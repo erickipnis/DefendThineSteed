@@ -16,7 +16,15 @@ public class SteedScript: MonoBehaviour
 	Vector3 trollPosition;
 	Vector3 playerPosition;
 
+
 	float wanderAngle = 15.0f;
+
+	Vector3 previousPosition;
+	Vector3 velocity;
+	Vector3 acceleration;
+	Vector3 seekForce;
+	Vector3 fleeForce;
+
 
 	private float maxSpeed;
 	private float maxForce;	
@@ -33,7 +41,39 @@ public class SteedScript: MonoBehaviour
 	float successTimer;
 	float fitness;
 
+
 	int index;
+
+bool isFleeing;
+bool isWandering;
+bool isSeekingChar;
+bool isSeekingSafe;
+
+// Use this for initialization
+void Start () 
+{
+	agent = GetComponent<NavMeshAgent> ();
+	
+	previousPosition = new Vector3(0.0f, 0.0f, 0.0f);
+	
+	velocity = agent.velocity;		
+	
+	acceleration = new Vector3(0.0f, 0.0f, 0.0f);
+	
+	maxForce = 0.2f;
+	maxSpeed = 2.0f;
+	
+	trolls = GameObject.FindGameObjectsWithTag("Troll");
+	//Debug.Log(steeds);
+	player = GameObject.FindGameObjectWithTag("Player");
+	safeZone = GameObject.FindGameObjectWithTag("safe");
+	targetSeek = new Vector3(1254.473f, 0.0f, 793.6649f);
+	
+	//wanderSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+	//wanderSphere.transform.position = agent.transform.position;
+	
+}
+
 
 	float steedFleeDistance;
 
@@ -95,6 +135,7 @@ public class SteedScript: MonoBehaviour
 		// Determine initial behavior with bayes
 		DetermineBehaviors();
 	}
+
 
 	// Update is called once per frame
 	void Update () 
@@ -293,6 +334,96 @@ public class SteedScript: MonoBehaviour
 //			isFleeing = false;
 //			isSeeking = true;
 //		}
+
+void DetermineBehaviors()
+{
+	GameObject troll = findClosestTroll ();
+	
+	Vector3 trollPosition = troll.transform.position;
+	Vector3 playerPosition = player.transform.position;
+	Vector3 safePosition = safeZone.transform.position;
+	
+	float trollDistance = Vector3.Distance (agent.transform.position, trollPosition);
+	float playerDistance = Vector3.Distance (agent.transform.position, playerPosition);
+	float safeDistance = Vector3.Distance (agent.transform.position, safePosition);
+	
+	/*if (trollDistance <= 100) 
+		{
+		if (playerDistance <= 100) 
+			{
+			if (safeDistance <= 25) 
+			{
+				seekForce = seek (safePosition);
+				applyForce (seekForce);
+				Destroy (agent.gameObject);
+			} // go to safe
+			seekForce = seek (safePosition);
+			applyForce (playerPosition);
+		} // follow player
+		fleeForce = flee (trollPosition);
+		applyForce (fleeForce);
+	} // flee troll
+	else 
+	{
+		Vector3 wanderForce = wander ();
+	}*/
+		if (playerDistance <= 100)
+		{
+			Vector3 seekForce = seek (playerPosition);
+			//Debug.Log(playerDistance);
+			
+			if (trollDistance <= 100)
+			{
+				//Debug.Log(trollDistance);
+				Vector3 fleeForce = flee(trollPosition);
+				
+				applyForce(fleeForce);			
+				//agent.SetDestination(seekForce);
+				
+			}
+			if(safeDistance <= 25)
+			{
+				seekForce = seek (safePosition);
+				//applyForce (seekForce);
+				Save.score += 1;
+				Destroy (agent.gameObject);
+				
+			}
+			applyForce (seekForce);
+
+		}
+		else if (playerDistance > 100)
+		{
+			if (trollDistance <= 100)
+			{
+				//Debug.Log(trollDistance);
+				Vector3 fleeForce = flee(trollPosition);
+				
+				applyForce(fleeForce);			
+				//agent.SetDestination(seekForce);
+				
+			}	
+			else if (trolls == null || trollDistance > 100)
+			{	
+				
+				Vector3 wanderForce = wander();
+				//Debug.Log(trollDistance);
+				
+				//agent.SetDestination(wanderForce);			
+			}
+		}
+	
+}
+
+
+private void calculateVelocity()
+{
+	velocity = (agent.transform.position - previousPosition) / Time.deltaTime; 
+	velocity.Normalize();
+	
+	previousPosition = agent.transform.position;
+}
+
 
 		// Did steed survive based on its decision?
 		if (successTimer >= 5.0f)
@@ -542,7 +673,4 @@ public class SteedScript: MonoBehaviour
 		acceleration += force;
 		acceleration.y = 0;
 	}
-
-
-
 }

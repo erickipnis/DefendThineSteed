@@ -8,15 +8,14 @@ public class GameController : MonoBehaviour {
 		const int buttonWidth = 100;
 		const int buttonHeight = 75;
 
-		Rect resetButton = new Rect (Screen.width - (buttonWidth * 2), Screen.height -
+		Rect resetButton = new Rect (Screen.width - (buttonWidth + 1), Screen.height -
 						(buttonHeight + 10), buttonWidth, buttonHeight);
 
-		Rect endButton = new Rect (Screen.width - buttonWidth, Screen.height - 
-						(buttonHeight + 10), buttonWidth, buttonHeight);
 
 		if(GUI.Button (resetButton, "RESTART"))
 		{
 			//BayesScript.DumpToFile(100, true, false, true);
+
 			TrollGeneticAlgorithm.ShutdownGA();
 			TrollGeneticAlgorithm.WritePhenotypes();		
 			TrollGeneticAlgorithm.Reset();		
@@ -28,8 +27,13 @@ public class GameController : MonoBehaviour {
 			BayesScript.DumpToFile();
 
 			Application.LoadLevel(Application.loadedLevel);
+			GeneticAlgorithm.ShutdownGA();
 		}
-		if (GUI.Button (endButton, "END"))
+	}
+
+	void Update()
+	{
+		if (Save.score + Loss.score == PrefabGenerator.steeds) 
 		{
 			TrollGeneticAlgorithm.ShutdownGA();
 			TrollGeneticAlgorithm.WritePhenotypes();
@@ -42,6 +46,15 @@ public class GameController : MonoBehaviour {
 			BayesScript.DumpToFile();
 
 			Application.Quit();
+
+			if(Save.score > Loss.score)
+			{
+				Application.LoadLevel ("WinScene");
+			}
+			if(Save.score < Loss.score)
+			{
+				Application.LoadLevel("LoseScene");
+			}
 		}
 	}
 }
